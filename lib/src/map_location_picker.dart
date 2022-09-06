@@ -118,6 +118,10 @@ class MapLocationPicker extends StatefulWidget {
   /// origin: Location(lat: -33.852, lng: 151.211),
   final Location? origin;
 
+  /// currentLatLng init location for camera position
+  /// currentLatLng: Location(lat: -33.852, lng: 151.211),
+  final LatLng? currentLatLng;
+
   /// Location bounds for restricting results to a radius around a location
   /// location: Location(lat: -33.867, lng: 151.195)
   final Location? location;
@@ -154,6 +158,7 @@ class MapLocationPicker extends StatefulWidget {
     Key? key,
     this.desiredAccuracy = LocationAccuracy.high,
     required this.apiKey,
+    this.currentLatLng = const LatLng(24.774265, 46.738586),
     this.geoCodingBaseUrl,
     this.geoCodingHttpClient,
     this.geoCodingApiHeaders,
@@ -242,7 +247,8 @@ class _MapLocationPickerState extends State<MapLocationPicker> {
 
   @override
   void initState() {
-    getCurrentLocation();
+    _initialPosition = widget.currentLatLng!;
+    // getCurrentLocation();
     super.initState();
   }
 
