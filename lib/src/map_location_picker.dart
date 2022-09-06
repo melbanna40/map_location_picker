@@ -5,6 +5,7 @@ import 'package:form_builder_extra_fields/form_builder_extra_fields.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart';
+import 'package:map_location_picker/src/location_helper.dart';
 import 'package:provider/provider.dart';
 import "package:google_maps_webservice/geocoding.dart";
 import 'package:google_maps_webservice/places.dart';
@@ -30,6 +31,7 @@ class MapLocationPicker extends StatefulWidget {
   /// GeoCoding base url
   final String? geoCodingBaseUrl;
 
+  /// GeoCoding http client
   /// GeoCoding http client
   final Client? geoCodingHttpClient;
 
@@ -147,6 +149,7 @@ class MapLocationPicker extends StatefulWidget {
 
   /// Hide Suggestions on keyboard hide
   final bool hideSuggestionsOnKeyboardHide;
+
   const MapLocationPicker({
     Key? key,
     this.desiredAccuracy = LocationAccuracy.high,
@@ -233,6 +236,27 @@ class _MapLocationPickerState extends State<MapLocationPicker> {
       target: _initialPosition,
       zoom: _zoom,
     );
+  }
+
+  Position? position;
+
+  @override
+  void initState() {
+    getCurrentLocation();
+    super.initState();
+  }
+
+  void getCurrentLocation() async {
+    try {
+      position = await LocationHelper.determinePosition();
+    } catch (e) {
+      logger.e('$e');
+    }
+    if (position != null) {
+      _initialPosition = LatLng(position!.latitude, position!.longitude);
+      cameraPosition();
+      setState(() {});
+    }
   }
 
   /// Decode address from latitude & longitude
